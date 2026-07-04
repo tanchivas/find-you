@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tìm Em - 3D Galaxy & Scrapbook</title>
+  <!-- Google Fonts: Inter & Patrick Hand & Playpen Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Patrick+Hand&family=Playpen+Sans:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Background Audio (played on interaction) -->
+  <audio id="bg-music" src="/music.mp3" loop></audio>
+
+  <!-- MÀN HÌNH CHÀO MỪNG (LANDING SCREEN) -->
+  <div id="landing-screen" class="screen active">
+    <div class="stars-bg"></div>
+    <div class="landing-content">
+      <h1 class="glow-text">TÌM EM</h1>
+      <p class="subtitle">"Đi qua hàng vạn năm ánh sáng, vượt qua triệu tinh cầu chỉ để thấy nụ cười của em..."</p>
+      <button id="start-btn" class="glow-button">Bắt Đầu Hành Trình</button>
+    </div>
+    <div class="credits">Truyền cảm hứng từ bài hát "Tìm em" - Hngle ft. Bảo Anh</div>
+  </div>
+
+  <!-- PHẦN 3D THIÊN HÀ & RADAR (GALAXY SEARCH SCREEN) -->
+  <div id="galaxy-screen" class="screen">
+    <canvas id="galaxy-canvas"></canvas>
+    
+    <!-- Radar UI Overlay -->
+    <div id="radar-ui">
+      <div class="radar-header">
+        <div class="radar-title">GALAXY SCANNER v1.0</div>
+        <div class="pulse-dot"></div>
+      </div>
+      <div class="radar-status" id="radar-status">Đang khởi động hệ thống quét tinh vân...</div>
+      <div class="radar-progress-bar">
+        <div class="radar-progress-fill" id="radar-progress">0%</div>
+      </div>
+      <div class="radar-coordinates" id="radar-coords">SEC-000 : LAT 0.00 : LON 0.00</div>
+      <div class="radar-hint" id="radar-hint">Tìm kiếm đốm sáng màu hồng phát sáng kỳ lạ giữa thiên hà...</div>
+    </div>
+  </div>
+
+  <!-- PHẦN ALBUM SCRAPBOOK (SCRAPBOOK SCREEN) -->
+  <div id="scrapbook-screen" class="screen">
+    <!-- Nút điều khiển nhạc nổi ở góc -->
+    <div id="music-controller">
+      <button id="play-pause-btn" class="music-btn" title="Phát/Tạm dừng nhạc">
+        <svg class="icon-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="icon-pause hidden" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <div class="volume-slider-container">
+        <svg class="icon-volume" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.7">
+      </div>
+      <div class="track-info">Hngle ft. Bảo Anh - Tìm em</div>
+    </div>
+
+    <!-- Container Album ảnh -->
+    <div class="scrapbook-container">
+      <div class="scrapbook-wrapper">
+        <div class="scrapbook" id="scrapbook">
+          
+          <!-- BÌA TRƯỚC (FRONT COVER) (TRANG 0) -->
+          <div class="page cover-page active" id="page-0">
+            <div class="page-content cover-content">
+              <div class="metal-corner top-left"></div>
+              <div class="metal-corner top-right"></div>
+              <div class="metal-corner bottom-left"></div>
+              <div class="metal-corner bottom-right"></div>
+              <div class="washi-tape top-left"></div>
+              <h2 class="scrapbook-title">Gửi Vợ Yêu<br><span class="handwritten" style="font-size: 2.2rem; color: #b22222; margin-top: 10px;">Sinh Nhật Hạnh Phúc ❤️</span></h2>
+              <div class="cover-art">
+                <div class="heart-pulse-svg">🎁</div>
+              </div>
+              <p class="cover-date" style="font-size: 1.3rem;">21 Tháng 8</p>
+              <div class="washi-tape bottom-right"></div>
+            </div>
+          </div>
+
+          <!-- SPREAD 1: CHÚC MỪNG SINH NHẬT & HẸN ƯỚC TRỌN ĐỜI (TRANG 1 & 2) -->
+          <div class="page" id="page-1">
+            <div class="page-content interactive-page">
+              <div class="washi-tape top-right"></div>
+              <h3 class="handwritten-title">Happy Birthday Vợ Yêu</h3>
+              <p class="story-text">Chúc mừng sinh nhật cô gái tuyệt vời nhất của cuộc đời anh. Chúc em luôn xinh đẹp, hạnh phúc và cười thật nhiều bên anh nhé!</p>
+              
+              <!-- Slot ảnh vợ yêu -->
+              <div class="polaroid interactive-polaroid tilt-left" id="polaroid-user-13" style="max-width: 220px;">
+                <div class="upload-placeholder" id="upload-placeholder-13" style="width: 200px; height: 150px;">
+                  <div class="upload-icon">+</div>
+                  <span>Ảnh chủ nhân bữa tiệc</span>
+                </div>
+                <img id="user-img-13" class="user-img hidden" src="" alt="Ảnh" style="width: 200px; height: 150px;">
+                <input type="file" id="file-input-13" accept="image/*" class="file-input">
+                <input type="text" class="caption-input" placeholder="Ghi chú..." value="Tuổi mới thật rực rỡ ❤️">
+              </div>
+            </div>
+          </div>
+          <div class="page chalkboard" id="page-2">
+            <div class="page-content">
+              <div class="washi-tape top-left" style="background-color: rgba(255,255,255,0.2);"></div>
+              <h3 class="handwritten-title chalkboard-title" style="color: #fff; border-bottom: 2px dashed #fff;">Bên Nhau Trọn Đời</h3>
+              <p class="story-text chalkboard-text" style="color: #ececec; font-size: 1.05rem;">
+                Chúng ta không kỷ niệm những cột mốc ngắn ngủi.<br><br>
+                Hành trình này là <b>trọn đời</b>.<br><br>
+                Là lời hẹn cùng nắm tay nhau đi qua giông bão, đón những ngày nắng ấm, bên nhau cho đến khi đầu bạc răng long, đi tới cuối cuộc đời.
+              </p>
+              <div class="chalkboard-drawing">
+                👴👵 <span style="font-family: 'Patrick Hand', cursive; font-size: 1.4rem;">Together Till The End</span> ❤️
+              </div>
+            </div>
+          </div>
+
+          <!-- SPREAD 2: NỖI NHỚ & THỂ KÉO TRƯỢT HÀNG NGANG (TRANG 3 & 4) -->
+          <div class="page chalkboard" id="page-3">
+            <div class="page-content">
+              <h3 class="handwritten-title chalkboard-title" style="color: #fff;">Mảnh Ghép Hoàn Hảo</h3>
+              <p class="story-text chalkboard-text" style="color: #ddd;">Anh từng nghĩ mình đơn độc giữa vũ trụ này, cho đến khi gặp em...</p>
+              
+              <!-- Vẽ hai mảnh ghép đan vào nhau -->
+              <div class="puzzle-drawing-container">
+                <div class="puzzle-piece-draw pink">You</div>
+                <div class="puzzle-piece-draw red">Me</div>
+                <div class="puzzle-text">complete me</div>
+              </div>
+            </div>
+          </div>
+          <div class="page" id="page-4">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Khi Em Thấy Nhớ Anh...</h3>
+              <p class="story-text" style="margin-bottom: 10px;">Nhấp vào chiếc nơ hồng để tháo bưu kiện và trổ xuống dây ảnh kỷ niệm của chúng mình nhé!</p>
+              
+              <!-- Tệp tin hồ sơ đóng nơ -->
+              <div class="packaged-folder" id="memory-package">
+                <!-- Nắp hộp -->
+                <div class="package-flap"></div>
+                
+                <!-- Nơ hồng tháo dây -->
+                <div class="package-bow" id="package-bow-btn">🎀</div>
+                
+                <!-- Nhãn bìa -->
+                <div class="package-label">BƯU KIỆN KÝ ỨC NGỌT NGÀO</div>
+
+                <!-- Dây ảnh trổ xuống khi mở nơ -->
+                <div class="dropdown-string-container hidden" id="dropdown-string-area">
+                  <div class="hanging-string"></div>
+                  
+                  <div class="hanging-polaroids-list">
+                    
+                    <!-- Kỷ niệm 1: First Date -->
+                    <div class="polaroid hanging-polaroid" id="polaroid-memory-1">
+                      <div class="hanging-pin">📌</div>
+                      <div class="polaroid-edit-btn" title="Thay đổi ảnh">📷</div>
+                      <img src="/memories/first_date/Locket_1783054313072_88.jpg" class="user-img" id="mem-img-1" alt="First Date">
+                      <input type="file" id="mem-file-1" accept="image/*" class="file-input">
+                      <div class="caption" style="font-size: 0.8rem; margin-top: 3px; font-weight: bold;">First Date ❤️</div>
+                    </div>
+
+                    <!-- Kỷ niệm 2: First Photobooth -->
+                    <div class="polaroid hanging-polaroid" id="polaroid-memory-2">
+                      <div class="hanging-pin">📌</div>
+                      <div class="polaroid-edit-btn" title="Thay đổi ảnh">📷</div>
+                      <img src="/memories/photobooth/photo1.png" class="user-img" id="mem-img-2" alt="Photobooth">
+                      <input type="file" id="mem-file-2" accept="image/*" class="file-input">
+                      <div class="caption" style="font-size: 0.8rem; margin-top: 3px; font-weight: bold;">Photobooth 📸</div>
+                    </div>
+
+                    <!-- Kỷ niệm 3: First Movie -->
+                    <div class="polaroid hanging-polaroid" id="polaroid-memory-3">
+                      <div class="hanging-pin">📌</div>
+                      <div class="polaroid-edit-btn" title="Thay đổi ảnh">📷</div>
+                      <img src="/memories/movie/Locket_1783054389705_10.jpg" class="user-img" id="mem-img-3" alt="Xem phim">
+                      <input type="file" id="mem-file-3" accept="image/*" class="file-input">
+                      <div class="caption" style="font-size: 0.8rem; margin-top: 3px; font-weight: bold;">Xem phim 🍿</div>
+                    </div>
+
+                    <!-- Kỷ niệm 4: Ula Cafe -->
+                    <div class="polaroid hanging-polaroid" id="polaroid-memory-4">
+                      <div class="hanging-pin">📌</div>
+                      <div class="polaroid-edit-btn" title="Thay đổi ảnh">📷</div>
+                      <img src="/memories/ula_cafe/Locket_1783054400213_21.jpg" class="user-img" id="mem-img-4" alt="Ula Cafe">
+                      <input type="file" id="mem-file-4" accept="image/*" class="file-input">
+                      <div class="caption" style="font-size: 0.8rem; margin-top: 3px; font-weight: bold;">1 đêm trọn vẹn @ Ula ☕</div>
+                    </div>
+
+                    <!-- Kỷ niệm 5: Ho Guom -->
+                    <div class="polaroid hanging-polaroid" id="polaroid-memory-5">
+                      <div class="hanging-pin">📌</div>
+                      <div class="polaroid-edit-btn" title="Thay đổi ảnh">📷</div>
+                      <img src="/memories/ho_guom/IMG_20260702_122704.jpg" class="user-img" id="mem-img-5" alt="Hồ Gươm">
+                      <input type="file" id="mem-file-5" accept="image/*" class="file-input">
+                      <div class="caption" style="font-size: 0.8rem; margin-top: 3px; font-weight: bold;">Hồ Gươm 🌳</div>
+                    </div>
+
+                    <!-- Kỷ niệm 6: Nha Tho -->
+                    <div class="polaroid hanging-polaroid" id="polaroid-memory-6">
+                      <div class="hanging-pin">📌</div>
+                      <div class="polaroid-edit-btn" title="Thay đổi ảnh">📷</div>
+                      <img src="/memories/nha_tho/MYXJ_20260702173050106_save.jpg" class="user-img" id="mem-img-6" alt="Nhà Thờ">
+                      <input type="file" id="mem-file-6" accept="image/*" class="file-input">
+                      <div class="caption" style="font-size: 0.8rem; margin-top: 3px; font-weight: bold;">Nhà Thờ Lớn ⛪</div>
+                    </div>
+
+                    <!-- Kỷ niệm 7: Cafe Phim -->
+                    <div class="polaroid hanging-polaroid" id="polaroid-memory-7">
+                      <div class="hanging-pin">📌</div>
+                      <div class="polaroid-edit-btn" title="Thay đổi ảnh">📷</div>
+                      <img src="/memories/cafe_phim/MYXJ_20260702202209569_save.jpg" class="user-img" id="mem-img-7" alt="Cafe Phim">
+                      <input type="file" id="mem-file-7" accept="image/*" class="file-input">
+                      <div class="caption" style="font-size: 0.8rem; margin-top: 3px; font-weight: bold;">Cafe Phim 🎬</div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPREAD 3: MÓN QUÀ ĐỘC BẢN & ẢNH CHỒNG LỚP (TRANG 5 & 6) -->
+          <div class="page" id="page-5">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Món Quà Độc Bản</h3>
+              <p class="story-text">Cuốn sổ này là hàng limited chỉ dành riêng cho vợ yêu, không có cái thứ hai trên thế giới đâu nhé!</p>
+              
+              <!-- Khung ảnh polaroid quà tặng -->
+              <div class="polaroid interactive-polaroid tilt-right" id="polaroid-user-14" style="max-width: 230px; margin-top: 15px;">
+                <div class="upload-placeholder" id="upload-placeholder-14" style="width: 210px; height: 160px;">
+                  <div class="upload-icon">+</div>
+                  <span>Món quà tinh thần</span>
+                </div>
+                <img id="user-img-14" class="user-img hidden" src="" alt="Ảnh" style="width: 210px; height: 160px;">
+                <input type="file" id="file-input-14" accept="image/*" class="file-input">
+                <input type="text" class="caption-input" placeholder="Ghi chú..." value="Chỉ dành riêng cho em ❤️">
+              </div>
+            </div>
+          </div>
+          <div class="page" id="page-6">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title" style="align-self: flex-end;">Dành Cho Babi</h3>
+              <p class="story-text" style="text-align: right; width: 100%;">Click vào các tấm ảnh để lật xem hoặc tải lên khoảnh khắc lãng mạn.</p>
+              
+              <!-- Các ảnh chồng chéo nghệ thuật Cascading Overlap -->
+              <div class="cascading-photos-container">
+                
+                <div class="polaroid interactive-polaroid cascade-card photo-1" id="polaroid-user-5">
+                  <div class="upload-placeholder" id="upload-placeholder-5">
+                    <div class="upload-icon">+</div>
+                  </div>
+                  <img id="user-img-5" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-5" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="..." value="Ngọt ngào">
+                </div>
+
+                <div class="polaroid interactive-polaroid cascade-card photo-2" id="polaroid-user-6">
+                  <div class="upload-placeholder" id="upload-placeholder-6">
+                    <div class="upload-icon">+</div>
+                  </div>
+                  <img id="user-img-6" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-6" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="..." value="Nghịch ngợm">
+                </div>
+
+                <div class="polaroid interactive-polaroid cascade-card photo-3" id="polaroid-user-7">
+                  <div class="upload-placeholder" id="upload-placeholder-7">
+                    <div class="upload-icon">+</div>
+                  </div>
+                  <img id="user-img-7" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-7" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="..." value="Bình yên">
+                </div>
+
+                <div class="polaroid interactive-polaroid cascade-card photo-4" id="polaroid-user-8">
+                  <div class="upload-placeholder" id="upload-placeholder-8">
+                    <div class="upload-icon">+</div>
+                  </div>
+                  <img id="user-img-8" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-8" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="..." value="Mãi bên nhau">
+                </div>
+
+              </div>
+              <div class="washi-tape bottom-left" style="bottom: 25px; left: 20px;"></div>
+            </div>
+          </div>
+
+          <!-- SPREAD 4: ĐOÀN TÀU TÌNH YÊU (TRANG 7 & 8) -->
+          <div class="page" id="page-7">
+            <div class="page-content">
+              <div class="washi-tape top-right"></div>
+              <h3 class="handwritten-title">Lời Tâm Sự...</h3>
+              <p class="story-text" style="font-size: 1rem; line-height: 1.8; font-family: 'Patrick Hand', cursive;">
+                Vợ yêu à,<br>
+                Đi qua bao nhiêu dải ngân hà, anh mới tìm thấy em - mảnh ghép hoàn hảo của đời mình. Hôm nay là sinh nhật em, anh muốn dành tặng em cả thế giới nhỏ bé này.<br>
+                Hãy cùng nhau đi tiếp hành trình trọn đời này nhé, cùng ngắm hoàng hôn mỗi chiều và già đi bên nhau thật hạnh phúc.
+              </p>
+              
+              <!-- 2 Slot ảnh trang trí nhỏ ở góc thư -->
+              <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center;">
+                <div class="polaroid interactive-polaroid tilt-left" id="polaroid-user-15" style="max-width: 105px; padding: 4px 4px 10px 4px;">
+                  <div class="upload-placeholder" id="upload-placeholder-15" style="width: 95px; height: 75px; font-size: 0.6rem;">+</div>
+                  <img id="user-img-15" class="user-img hidden" src="" alt="Ảnh" style="width: 95px; height: 75px;">
+                  <input type="file" id="file-input-15" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="Ghi chú" value="Me" style="font-size: 0.75rem; margin-top: 4px;">
+                </div>
+                <div class="polaroid interactive-polaroid tilt-right" id="polaroid-user-16" style="max-width: 105px; padding: 4px 4px 10px 4px;">
+                  <div class="upload-placeholder" id="upload-placeholder-16" style="width: 95px; height: 75px; font-size: 0.6rem;">+</div>
+                  <img id="user-img-16" class="user-img hidden" src="" alt="Ảnh" style="width: 95px; height: 75px;">
+                  <input type="file" id="file-input-16" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="Ghi chú" value="You" style="font-size: 0.75rem; margin-top: 4px;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page" id="page-8">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Đoàn Tàu Tình Yêu</h3>
+              <p class="story-text">Kéo thanh trượt bên dưới để 2 đoàn tàu khởi hành gặp nhau nhé!</p>
+              
+              <!-- Giao diện Đoàn Tàu Kép -->
+              <div class="train-railway-container">
+                <div class="railway-track"></div>
+                
+                <!-- Tàu Nam (chạy từ trái) -->
+                <div class="train-vehicle left-train" id="train-left">
+                  <img src="/left.png" class="train-char-photo" alt="Left">
+                </div>
+
+                <!-- Tàu Nữ (chạy từ phải) -->
+                <div class="train-vehicle right-train" id="train-right">
+                  <img src="/right.png" class="train-char-photo" alt="Right">
+                </div>
+
+                <!-- Cặp đôi nụ hôn (ẩn ở giữa) -->
+                <div class="kissing-couple-silhouette hidden" id="kissing-couple">
+                  <div class="street-lamp">💡</div>
+                  <img src="/center.jpg" class="center-couple-photo" alt="Center">
+                  <div class="kissing-hearts-aura">❤️❤️</div>
+                </div>
+              </div>
+
+              <!-- Thanh trượt điều khiển -->
+              <div class="train-control-bar">
+                <span>Khởi hành</span>
+                <input type="range" id="train-slider" min="0" max="100" value="0">
+                <span>Gặp nhau</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPREAD 5: LỊCH THÁNG 8 & MẢNH GHÉP TRÁI TIM (TRANG 9 & 10) -->
+          <div class="page" id="page-9">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Ngày Đẹp Nhất</h3>
+              <p class="story-text">Kéo chiếc kính lúp hồng đến đúng ngày sinh nhật của vợ yêu (21/08) nào!</p>
+              
+              <!-- Giao diện Lịch Tháng 8 -->
+              <div class="calendar-container">
+                <div class="calendar-header-title">Tháng 8 / August</div>
+                <div class="calendar-weekdays">
+                  <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                </div>
+                <div class="calendar-days-grid" id="calendar-days-grid">
+                  <!-- Lịch tháng 8/2026 bắt đầu từ Thứ Bảy (ngày 1) -->
+                  <span></span><span></span><span></span><span></span><span></span><span>1</span><span>2</span>
+                  <span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+                  <span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span>
+                  <span>17</span><span>18</span><span>19</span><span>20</span><span class="special-day-cell" id="aug-21-cell">21❤️</span><span>22</span><span>23</span>
+                  <span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span>
+                  <span>31</span>
+                </div>
+                
+                <!-- Kính lúp đỏ trượt -->
+                <div class="draggable-lens" id="calendar-lens">🔍</div>
+              </div>
+              <div class="calendar-status-text" id="calendar-feedback">Đang tìm kiếm ngày sinh nhật...</div>
+            </div>
+          </div>
+          <div class="page" id="page-10">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Mảnh Ghép Cuối Cùng</h3>
+              <p class="story-text">Nhấp mở bao thư thư bên dưới để lấy mảnh ghép ảnh chụp chung của hai người lắp vào tâm trái tim nhé!</p>
+              
+              <!-- Tranh xếp hình trái tim chứa ảnh chụp chung -->
+              <div class="puzzle-board">
+                <div class="heart-puzzle-base" id="heart-puzzle-target">
+                  <!-- Mảnh khuyết nằm ở giữa -->
+                  <div class="puzzle-hole" id="puzzle-hole-zone"></div>
+                </div>
+              </div>
+
+              <!-- Bao thư chứa các mảnh ghép của ảnh chụp chung -->
+              <div class="envelope-container-puzzle">
+                <div class="red-envelope" id="puzzle-envelope-btn" title="Click để mở phong thư">✉️</div>
+                
+                <!-- Bể mảnh ghép (Ẩn ban đầu, hiện khi mở bao thư) -->
+                <div class="puzzle-pieces-pool hidden" id="puzzle-pieces-pool">
+                  <!-- Mảnh 1: ĐÚNG - center.jpg -->
+                  <div class="puzzle-piece correct-piece" id="piece-correct" title="Kéo tôi vào tâm trái tim"></div>
+                  <!-- Mảnh 2: SAI - IMG_20260702_122704.jpg -->
+                  <div class="puzzle-piece wrong-piece" id="piece-wrong-1" title="Mảnh ghép này có đúng không nhỉ?"></div>
+                  <!-- Mảnh 3: SAI - MYXJ_20260702113555727_save.jpg -->
+                  <div class="puzzle-piece wrong-piece" id="piece-wrong-2" title="Mảnh ghép này có đúng không nhỉ?"></div>
+                  <!-- Mảnh 4: SAI - MYXJ_20260702123529828_save.jpg -->
+                  <div class="puzzle-piece wrong-piece" id="piece-wrong-3" title="Mảnh ghép này có đúng không nhỉ?"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPREAD 6: HỘP COUPON & POPUP TRẮC NGHIỆM (TRANG 11 & 12) -->
+          <div class="page" id="page-11">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Hộp Coupon Tặng Vợ</h3>
+              <p class="story-text">Nhấp vào chiếc hộp quà 3D bên dưới để rút các phiếu coupon đặc quyền chồng dành tặng vợ nhé!</p>
+              
+              <!-- Hộp quà 3D coupon -->
+              <div class="gift-box-coupon" id="gift-box-trigger">
+                <div class="gift-box-lid" id="gift-box-lid"></div>
+                <div class="gift-box-body">🎁</div>
+                
+                <!-- Thẻ coupon rút lên -->
+                <div class="drawn-coupon-card hidden" id="drawn-coupon">
+                  <div class="coupon-title">LOCO COUPON</div>
+                  <div class="coupon-content" id="coupon-text">Nội dung coupon</div>
+                  <div class="coupon-sub">Có giá trị trọn đời ❤️</div>
+                </div>
+              </div>
+              
+              <button id="draw-again-btn" class="action-btn hidden" style="margin-top: 15px;">Rút thẻ khác</button>
+            </div>
+          </div>
+          <div class="page" id="page-12">
+            <div class="page-content interactive-page">
+              <!-- Vòm popup Couple Arch -->
+              <div class="couple-pop-arch" id="couple-pop-arch">
+                <div class="arch-couple-cutout">💖👩‍❤️‍👨💖</div>
+              </div>
+
+              <h3 class="handwritten-title" style="margin-top: 10px;">Trắc Nghiệm Tình Yêu</h3>
+              <p class="story-text" style="margin-bottom: 10px;">Chọn đáp án đúng nhất điền vào chỗ trống:</p>
+              
+              <!-- Trắc nghiệm trích từ ảnh -->
+              <div class="quiz-box">
+                <div class="quiz-question">"I ______________ you"</div>
+                <div class="quiz-options">
+                  <button class="quiz-opt-btn" data-correct="true">a) Love (Yêu thương trọn đời)</button>
+                  <button class="quiz-opt-btn" data-correct="false">b) Miss (Nhớ nhung da diết)</button>
+                  <button class="quiz-opt-btn" data-correct="false">c) Like (Thích thú mỗi ngày)</button>
+                  <button class="quiz-opt-btn" data-correct="false">d) Want (Muốn ở bên mãi mãi)</button>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback">Hãy chọn một đáp án nhé!</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPREAD 7: HƯỚNG DẪN SỬ DỤNG & LƯU BÚT (TRANG 13 & 14) -->
+          <div class="page" id="page-13">
+            <div class="page-content">
+              <div class="washi-tape top-left"></div>
+              <h3 class="handwritten-title">Hướng Dẫn Sử Dụng</h3>
+              <p class="story-text" style="font-family: 'Patrick Hand', cursive; font-size: 1.15rem; line-height: 1.8; color: #5a4537;">
+                Phiếu **Love Coupon** được kích hoạt tự động:<br><br>
+                1. Bất cứ lúc nào vợ yêu muốn sử dụng.<br>
+                2. Khi em buồn, mà khi em vui cũng được sử dụng luôn, hehe.<br>
+                3. Khi rảnh rỗi không có việc gì làm.<br>
+                4. Khi em thấy nhớ chồng.<br>
+                5. Đặc biệt hiệu quả khi cãi nhau với chồng (chồng sẽ tự động chịu thua vô điều kiện! :()
+              </p>
+            </div>
+          </div>
+          <div class="page" id="page-14">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Khung Trời Kỷ Niệm</h3>
+              <p class="story-text">Nơi lưu trữ những ngày tháng êm đềm chung đôi.</p>
+              
+              <div class="polaroid-grid">
+                
+                <div class="polaroid interactive-polaroid" id="polaroid-user-9">
+                  <div class="upload-placeholder" id="upload-placeholder-9">
+                    <div class="upload-icon">+</div>
+                    <span>Tải ảnh 9</span>
+                  </div>
+                  <img id="user-img-9" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-9" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="Ghi chú..." value="Những chuyến đi xa">
+                </div>
+
+                <div class="polaroid interactive-polaroid" id="polaroid-user-10">
+                  <div class="upload-placeholder" id="upload-placeholder-10">
+                    <div class="upload-icon">+</div>
+                    <span>Tải ảnh 10</span>
+                  </div>
+                  <img id="user-img-10" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-10" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="Ghi chú..." value="Đón hoàng hôn">
+                </div>
+
+                <div class="polaroid interactive-polaroid" id="polaroid-user-11">
+                  <div class="upload-placeholder" id="upload-placeholder-11">
+                    <div class="upload-icon">+</div>
+                    <span>Tải ảnh 11</span>
+                  </div>
+                  <img id="user-img-11" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-11" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="Ghi chú..." value="Tối cuối tuần">
+                </div>
+
+                <div class="polaroid interactive-polaroid" id="polaroid-user-12">
+                  <div class="upload-placeholder" id="upload-placeholder-12">
+                    <div class="upload-icon">+</div>
+                    <span>Tải ảnh 12</span>
+                  </div>
+                  <img id="user-img-12" class="user-img hidden" src="" alt="Ảnh">
+                  <input type="file" id="file-input-12" accept="image/*" class="file-input">
+                  <input type="text" class="caption-input" placeholder="Ghi chú..." value="Cùng nấu ăn">
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- SPREAD 8: STICKER TỰ DO & BÌA SAU (TRANG 15 & 16) -->
+          <div class="page" id="page-15">
+            <div class="page-content interactive-page">
+              <h3 class="handwritten-title">Trang Trí Quyển Sổ</h3>
+              <p class="story-text" style="font-size: 0.8rem; margin-bottom: 5px;">Chọn sticker bên dưới và nhấp vào khu vực trang giấy để dán trang trí nhé! (Có thể kéo thả sticker)</p>
+              
+              <!-- Thanh chọn Sticker -->
+              <div class="sticker-selector">
+                <div class="sticker-opt active" data-sticker="❤️">❤️</div>
+                <div class="sticker-opt" data-sticker="🌸">🌸</div>
+                <div class="sticker-opt" data-sticker="✨">✨</div>
+                <div class="sticker-opt" data-sticker="🧸">🧸</div>
+                <div class="sticker-opt" data-sticker="🌟">🌟</div>
+                <div class="sticker-opt" data-sticker="🍀">🍀</div>
+                <div class="sticker-opt" data-sticker="🐱">🐱</div>
+              </div>
+
+              <div class="scrapbook-canvas" id="scrapbook-canvas-area" style="height: 240px;">
+                <p class="canvas-hint">Nhấp vào khu vực này để dán sticker đang chọn</p>
+              </div>
+              <button id="clear-stickers-btn" class="action-btn">Xóa Sticker</button>
+            </div>
+          </div>
+          <div class="page back-page" id="page-16">
+            <div class="page-content back-content">
+              <div class="metal-corner top-left"></div>
+              <div class="metal-corner top-right"></div>
+              <div class="metal-corner bottom-left"></div>
+              <div class="metal-corner bottom-right"></div>
+              <div class="washi-tape top-left" style="transform: rotate(2deg);"></div>
+              <h3 class="handwritten">Hành Trình Chưa Kết Thúc...</h3>
+              <div class="back-heart">💖</div>
+              <p class="story-text" style="text-align: center; font-family: 'Patrick Hand', cursive; font-size: 1.3rem;">Vẫn còn rất nhiều trang giấy trống đang chờ chúng ta viết tiếp suốt cuộc đời này.</p>
+              <p class="end-text" style="font-size: 2.2rem; color: #b22222; font-family: 'Patrick Hand', cursive;">Yêu vợ nhiều hơn mỗi ngày.</p>
+              <div class="washi-tape bottom-left"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Các nút điều hướng Album -->
+      <div class="scrapbook-nav">
+        <button id="prev-page-btn" class="nav-btn disabled" disabled>Trang Trước</button>
+        <span class="page-number" id="page-indicator">Trang 1 / 16</span>
+        <button id="next-page-btn" class="nav-btn">Trang Sau</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox phóng to xem ảnh (hỗ trợ trượt Carousel slide) -->
+  <div id="photo-lightbox" class="lightbox-modal hidden">
+    <span class="lightbox-close" id="lightbox-close-btn">&times;</span>
+    <a class="lightbox-prev" id="lightbox-prev-btn">&#10094;</a>
+    <img class="lightbox-content" id="lightbox-img" alt="Zoomed view">
+    <a class="lightbox-next" id="lightbox-next-btn">&#10095;</a>
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+    <div class="lightbox-dots-container" id="lightbox-dots-area"></div>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
